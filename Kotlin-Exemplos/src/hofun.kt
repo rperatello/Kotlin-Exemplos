@@ -14,7 +14,19 @@ fun List<String>.paraCadaString(funcao: (String) -> String): List<String> {
     return returnList
 }
 
-fun primeiraLetra(s: String): String = s.first().toString()
+//tipos genérico na declaração de uma função
+fun <T> List<T>.paraCada(funcao: (T) -> T): List<T> {
+    val returnList: MutableList<T> = mutableListOf()
+    this.forEach { returnList.add(funcao(it)) }
+    return returnList
+}
+
+fun incrementa(i: Int) = i + 1
+fun dobra(f: Float) = 2 * f
+
+
+//fun primeiraLetra(s: String): String = s.first().toString()
+fun primeiraLetra(s: String): String = "${s.first()}"
 
 fun main(){
     val x = "Olá, "
@@ -28,4 +40,21 @@ fun main(){
     var familia: List<String> = listOf("Pedro", "Marcela", "João", "Cadu")
     familia.paraCadaString(::primeiraLetra).forEach { println(it)}
     familia.paraCadaString { it.last().toString() }.forEach { println(it)}
+
+    //com genéricos
+    familia.paraCada(::primeiraLetra).forEach { println(it) }
+    val listaInteiros: List<Int> = (1..10).toList()
+    val listaInc: List<Int> = listaInteiros.paraCada(::incrementa)
+    listaInc.forEach { println(it) }
+
+    val listFloats: List<Float> = listOf(1f,2f,2.5f,3f)
+    var listaDob: List<Float> = listFloats.paraCada(::dobra)
+    listaDob.forEach { println(it) }
+    val listaTrip: List<Float> = listaInteiros.map { it.toFloat() }.paraCada {  x: Float -> 3 * x }
+    listaTrip.forEach { println(it) }
+    listaDob = listFloats.paraCada({ f: Float -> 5 * f })
+    listaDob = listFloats.paraCada { f: Float -> 5 * f }
+    listaDob = listFloats.paraCada() { dobra(it) }
+    listaDob = listFloats.paraCada { 2 * it }
+
 }
